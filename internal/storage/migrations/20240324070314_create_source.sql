@@ -11,5 +11,5 @@ CREATE TABLE source (
 
 -- +goose Down
 -- +goose StatementBegin
-DROP TABLE source;
+DROP TABLE IF EXISTS source;
 -- +goose StatementEnd

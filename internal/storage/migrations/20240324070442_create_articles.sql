@@ -6,7 +6,7 @@ CREATE TABLE articles (
     title VARCHAR(255) NOT NULL,
     summary TEXT NOT NULL,
     content TEXT NOT NULL,
-    feed_url VARCHAR(255) NOT NULL,
+    feed_url VARCHAR(255) NOT NULL UNIQUE,
     published_at TIMESTAMP NOT NULL,
     created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
     posted_at TIMESTAMP
@@ -15,5 +15,5 @@ CREATE TABLE articles (
 
 -- +goose Down
 -- +goose StatementBegin
-DROP TABLE articles;
+DROP TABLE IF EXISTS articles;
 -- +goose StatementEnd
