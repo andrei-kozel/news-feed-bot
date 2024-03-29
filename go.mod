@@ -1,6 +1,6 @@
 module github.com/andrei-kozel/news-feed-bot
 
-go 1.22.1
+go 1.23
 
 require (
 	github.com/SlyMarbo/rss v1.0.5
