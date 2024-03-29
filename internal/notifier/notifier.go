@@ -18,7 +18,7 @@ import (
 
 type ArticleProvider interface {
 	AllNotPosted(ctx context.Context, since time.Time, limit uint64) ([]model.Article, error)
-	MarkAsPosted(ctx context.Context, id int64) error
+	MarkAsPosted(ctx context.Context, article model.Article) error
 }
 
 type Summarizer interface {
@@ -50,6 +50,26 @@ func New(articleProvider ArticleProvider,
 	}
 }
 
+func (n *Notifier) Start(ctx context.Context) error {
+	ticker := time.NewTicker(n.sendInterval)
+	defer ticker.Stop()
+
+	if err := n.SelectAndSendArticle(ctx); err != nil {
+		return err
+	}
+
+	for {
+		select {
+		case <-ticker.C:
+			if err := n.SelectAndSendArticle(ctx); err != nil {
+				return err
+			}
+		case <-ctx.Done():
+			return ctx.Err()
+		}
+	}
+}
+
 func (n *Notifier) SelectAndSendArticle(ctx context.Context) error {
 	topOneNotPostedArticles, err := n.articles.AllNotPosted(ctx, time.Now().Add(-n.lookupTimeWindow), 1)
 	if err != nil {
@@ -71,7 +91,7 @@ func (n *Notifier) SelectAndSendArticle(ctx context.Context) error {
 		return err
 	}
 
-	return n.articles.MarkAsPosted(ctx, article.ID)
+	return n.articles.MarkAsPosted(ctx, article)
 }
 
 func (n *Notifier) extractSummary(ctx context.Context, article model.Article) (string, error) {
