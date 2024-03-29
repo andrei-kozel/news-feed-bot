@@ -55,7 +55,7 @@ func (s *ArticlePostgresStorage) AllNotPosted(ctx context.Context, since time.Ti
 				s.priority AS s_priority,
 				s.id AS s_id,
 				a.title AS a_title,
-				a.link AS a_link,
+				a.feed_url AS a_feed_url,
 				a.summary AS a_summary,
 				a.published_at AS a_published_at,
 				a.posted_at AS a_posted_at,

@@ -5,6 +5,7 @@ import (
 	"time"
 
 	"github.com/cristalhq/aconfig"
+	"github.com/cristalhq/aconfig/aconfigdotenv"
 	"github.com/cristalhq/aconfig/aconfighcl"
 )
 
@@ -29,9 +30,10 @@ func Get() Config {
 	once.Do(func() {
 		loader := aconfig.LoaderFor(&cfg, aconfig.Config{
 			EnvPrefix: "NEWS_FEED_BOT",
-			Files:     []string{"./config.hcl", "./config.local.hcl"},
+			Files:     []string{"./.env", "./config.local.hcl"},
 			FileDecoders: map[string]aconfig.FileDecoder{
 				".hcl": aconfighcl.New(),
+				".env": aconfigdotenv.New(),
 			},
 		})
 

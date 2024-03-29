@@ -37,6 +37,7 @@ type dbSource struct {
 	Name      string    `db:"name"`
 	FeedURL   string    `db:"feed_url"`
 	CreatedAt time.Time `db:"created_at"`
+	Priority  int       `db:"priority"`
 }
 
 func (s *SourcePostgresStorage) Create(ctx context.Context) ([]model.Source, error) {
@@ -57,6 +58,7 @@ func (s *SourcePostgresStorage) Create(ctx context.Context) ([]model.Source, err
 			Name:      s.Name,
 			FeedURL:   s.FeedURL,
 			CreatedAt: s.CreatedAt,
+			Priority:  s.Priority,
 		}
 	}), nil
 }

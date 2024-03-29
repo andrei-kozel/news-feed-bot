@@ -1,6 +1,6 @@
 -- +goose Up
 -- +goose StatementBegin
-CREATE TABLE source (
+CREATE TABLE sources (
     id SERIAL PRIMARY KEY,
     name VARCHAR(255) NOT NULL,
     url VARCHAR(255) NOT NULL,
@@ -11,5 +11,5 @@ CREATE TABLE source (
 
 -- +goose Down
 -- +goose StatementBegin
-DROP TABLE IF EXISTS source;
+DROP TABLE IF EXISTS sources;
 -- +goose StatementEnd

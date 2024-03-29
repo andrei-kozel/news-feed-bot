@@ -3,10 +3,13 @@ package main
 import (
 	"context"
 	"errors"
+	"fmt"
 	"log"
 	"os"
 	"os/signal"
 	"syscall"
+
+	_ "github.com/lib/pq"
 
 	"github.com/andrei-kozel/news-feed-bot/internal/config"
 	"github.com/andrei-kozel/news-feed-bot/internal/fetcher"
@@ -25,6 +28,7 @@ func main() {
 	}
 
 	db, err := sqlx.Connect("postgres", config.Get().DatabaseDSN)
+	fmt.Printf("DatabaseDSN: %v\n", config.Get().DatabaseDSN)
 	if err != nil {
 		log.Printf("Failed to connect to database: %v", err)
 		return
@@ -63,13 +67,13 @@ func main() {
 		}
 	}(ctx)
 
-	go func(ctx context.Context) {
-		if err := notifier.Start(ctx); err != nil {
-			if !errors.Is(err, context.Canceled) {
-				log.Printf("[ERROR] Notifier failed: %v", err)
-				return
-			}
-			log.Printf("[ERROR] Notifier stopped: %v", err)
+	//go func(ctx context.Context) {
+	if err := notifier.Start(ctx); err != nil {
+		if !errors.Is(err, context.Canceled) {
+			log.Printf("[ERROR] Notifier failed: %v", err)
+			return
 		}
-	}(ctx)
+		log.Printf("[ERROR] Notifier stopped: %v", err)
+	}
+	//}(ctx)
 }
