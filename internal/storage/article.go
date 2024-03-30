@@ -27,7 +27,7 @@ func (s *ArticlePostgresStorage) Store(ctx context.Context, article model.Articl
 
 	if _, err := conn.ExecContext(
 		ctx,
-		`INSERT INTO articles (source_id, title, link, summary, published_at)
+		`INSERT INTO articles (source_id, title, feed_url, summary, published_at)
 		VALUES ($1, $2, $3, $4, $5)
 		ON CONFLICT DO NOTHING`,
 		article.SourceID, article.Title, article.Link, article.Summary, article.PublishedAt,
@@ -103,12 +103,13 @@ func (s *ArticlePostgresStorage) MarkAsPosted(ctx context.Context, article model
 }
 
 type dbArticleWithPriority struct {
-	ID          int64          `db:"id"`
-	SourceID    int64          `db:"source_id"`
-	Title       string         `db:"title"`
-	Link        string         `db:"link"`
-	Summary     sql.NullString `db:"summary"`
-	PublishedAt time.Time      `db:"a_published_at"`
-	PostedAt    sql.NullTime   `db:"a_posted_at"`
-	CreatedAt   time.Time      `db:"a_created_at"`
+	ID             int64          `db:"a_id"`
+	SourcePriority int64          `db:"s_priority"`
+	SourceID       int64          `db:"s_id"`
+	Title          string         `db:"a_title"`
+	Link           string         `db:"a_feed_url"`
+	Summary        sql.NullString `db:"a_summary"`
+	PublishedAt    time.Time      `db:"a_published_at"`
+	PostedAt       sql.NullTime   `db:"a_posted_at"`
+	CreatedAt      time.Time      `db:"a_created_at"`
 }
