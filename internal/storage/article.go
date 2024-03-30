@@ -65,10 +65,8 @@ func (s *ArticlePostgresStorage) AllNotPosted(ctx context.Context, since time.Ti
 				a.posted_at AS a_posted_at,
 				a.created_at AS a_created_at
 			FROM articles a JOIN sources s ON s.id = a.source_id
-			WHERE a.posted_at IS NULL 
-				AND a.published_at >= $1::timestamp
-			ORDER BY a.created_at DESC, s_priority DESC LIMIT $2;`,
-		since.UTC().Format(time.RFC3339),
+			WHERE a.posted_at IS NULL
+			ORDER BY a.created_at DESC, s_priority DESC LIMIT $1;`,
 		limit,
 	); err != nil {
 		return nil, err

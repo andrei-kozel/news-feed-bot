@@ -3,7 +3,6 @@ package main
 import (
 	"context"
 	"errors"
-	"fmt"
 	"log"
 	"os"
 	"os/signal"
@@ -30,7 +29,6 @@ func main() {
 	}
 
 	db, err := sqlx.Connect("postgres", config.Get().DatabaseDSN)
-	fmt.Printf("DatabaseDSN: %v\n", config.Get().DatabaseDSN)
 	if err != nil {
 		log.Printf("Failed to connect to database: %v", err)
 		return
