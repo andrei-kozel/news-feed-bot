@@ -48,7 +48,11 @@ func main() {
 		)
 		notifier = notifier.New(
 			articlesStorage,
-			summary.NewOpenAISummarizer(config.Get().OpenAIKey, config.Get().OpenAIPrompt),
+			summary.NewOpenAISummarizer(
+				config.Get().OpenAIKey,
+				config.Get().OpenAIModel,
+				config.Get().OpenAIPrompt,
+			),
 			botAPI,
 			config.Get().NotificationInterval,
 			2*config.Get().FetchInterval,

@@ -27,10 +27,14 @@ func (s *ArticlePostgresStorage) Store(ctx context.Context, article model.Articl
 
 	if _, err := conn.ExecContext(
 		ctx,
-		`INSERT INTO articles (source_id, title, feed_url, summary, published_at)
-		VALUES ($1, $2, $3, $4, $5)
-		ON CONFLICT DO NOTHING`,
-		article.SourceID, article.Title, article.Link, article.Summary, article.PublishedAt,
+		`INSERT INTO articles (source_id, title, link, summary, published_at)
+	    				VALUES ($1, $2, $3, $4, $5)
+	    				ON CONFLICT DO NOTHING;`,
+		article.SourceID,
+		article.Title,
+		article.Link,
+		article.Summary,
+		article.PublishedAt,
 	); err != nil {
 		return err
 	}
@@ -55,7 +59,7 @@ func (s *ArticlePostgresStorage) AllNotPosted(ctx context.Context, since time.Ti
 				s.priority AS s_priority,
 				s.id AS s_id,
 				a.title AS a_title,
-				a.feed_url AS a_feed_url,
+				a.link AS a_link,
 				a.summary AS a_summary,
 				a.published_at AS a_published_at,
 				a.posted_at AS a_posted_at,
@@ -107,7 +111,7 @@ type dbArticleWithPriority struct {
 	SourcePriority int64          `db:"s_priority"`
 	SourceID       int64          `db:"s_id"`
 	Title          string         `db:"a_title"`
-	Link           string         `db:"a_feed_url"`
+	Link           string         `db:"a_link"`
 	Summary        sql.NullString `db:"a_summary"`
 	PublishedAt    time.Time      `db:"a_published_at"`
 	PostedAt       sql.NullTime   `db:"a_posted_at"`
