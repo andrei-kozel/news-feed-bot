@@ -11,6 +11,8 @@ import (
 
 	_ "github.com/lib/pq"
 
+	"github.com/andrei-kozel/news-feed-bot/internal/bot"
+	"github.com/andrei-kozel/news-feed-bot/internal/botkit"
 	"github.com/andrei-kozel/news-feed-bot/internal/config"
 	"github.com/andrei-kozel/news-feed-bot/internal/fetcher"
 	"github.com/andrei-kozel/news-feed-bot/internal/notifier"
@@ -53,6 +55,8 @@ func main() {
 			config.Get().TelegramChannelID,
 		)
 	)
+	newsBot := botkit.New(botAPI)
+	newsBot.RegisterCmdView("start", bot.ViewCmdStart())
 
 	ctx, cancel := signal.NotifyContext(context.Background(), os.Interrupt, syscall.SIGTERM)
 	defer cancel()
@@ -67,13 +71,22 @@ func main() {
 		}
 	}(ctx)
 
-	//go func(ctx context.Context) {
-	if err := notifier.Start(ctx); err != nil {
+	go func(ctx context.Context) {
+		if err := notifier.Start(ctx); err != nil {
+			if !errors.Is(err, context.Canceled) {
+				log.Printf("[ERROR] Notifier failed: %v", err)
+				return
+			}
+			log.Printf("[ERROR] Notifier stopped: %v", err)
+		}
+	}(ctx)
+
+	if err := newsBot.Run(ctx); err != nil {
 		if !errors.Is(err, context.Canceled) {
-			log.Printf("[ERROR] Notifier failed: %v", err)
+			log.Printf("[ERROR] Bot failed: %v", err)
 			return
 		}
-		log.Printf("[ERROR] Notifier stopped: %v", err)
+
+		log.Printf("[ERROR] Bot stopped: %v", err)
 	}
-	//}(ctx)
 }
