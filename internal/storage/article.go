@@ -28,8 +28,8 @@ func (s *ArticlePostgresStorage) Store(ctx context.Context, article model.Articl
 	if _, err := conn.ExecContext(
 		ctx,
 		`INSERT INTO articles (source_id, title, link, summary, published_at)
-	    				VALUES ($1, $2, $3, $4, $5)
-	    				ON CONFLICT DO NOTHING;`,
+							VALUES ($1, $2, $3, $4, $5)
+							ON CONFLICT DO NOTHING;`,
 		article.SourceID,
 		article.Title,
 		article.Link,
