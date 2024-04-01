@@ -60,6 +60,7 @@ func main() {
 	newsBot := botkit.New(botAPI)
 	newsBot.RegisterCmdView("start", bot.ViewCmdStart())
 	newsBot.RegisterCmdView("list", bot.ViewCmdListAllSources(sourceStorage))
+	newsBot.RegisterCmdView("addsource", bot.ViewCmdAddSource(sourceStorage))
 
 	ctx, cancel := signal.NotifyContext(context.Background(), os.Interrupt, syscall.SIGTERM)
 	defer cancel()
