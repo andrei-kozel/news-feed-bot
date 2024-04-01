@@ -11,6 +11,7 @@ import (
 	_ "github.com/lib/pq"
 
 	"github.com/andrei-kozel/news-feed-bot/internal/bot"
+	"github.com/andrei-kozel/news-feed-bot/internal/bot/middleware"
 	"github.com/andrei-kozel/news-feed-bot/internal/botkit"
 	"github.com/andrei-kozel/news-feed-bot/internal/config"
 	"github.com/andrei-kozel/news-feed-bot/internal/fetcher"
@@ -59,8 +60,8 @@ func main() {
 	)
 	newsBot := botkit.New(botAPI)
 	newsBot.RegisterCmdView("start", bot.ViewCmdStart())
-	newsBot.RegisterCmdView("list", bot.ViewCmdListAllSources(sourceStorage))
-	newsBot.RegisterCmdView("addsource", bot.ViewCmdAddSource(sourceStorage))
+	newsBot.RegisterCmdView("list", middleware.AdminOnly(config.Get().TelegramChannelID, bot.ViewCmdListAllSources(sourceStorage)))
+	newsBot.RegisterCmdView("addsource", middleware.AdminOnly(config.Get().TelegramChannelID, bot.ViewCmdAddSource(sourceStorage)))
 
 	ctx, cancel := signal.NotifyContext(context.Background(), os.Interrupt, syscall.SIGTERM)
 	defer cancel()
